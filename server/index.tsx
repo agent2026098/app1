@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import { serveStatic } from "hono/cloudflare-workers";
+
 import { trpcServer } from "@hono/trpc-server";
 import { appRouter } from "./trpc";
 import { dbMiddleware } from "./db";
@@ -54,9 +54,10 @@ app.get("/api/health", (c) => {
 });
 
 
-app.get("/assets/*", serveStatic());
-
-app.get("*", serveStatic({ path: "./index.html" }));
+// Non-API routes: serve via Cloudflare Workers Assets (static files + SPA fallback)
+app.get("*", async (c) => {
+  return c.env.ASSETS.fetch(c.req.raw);
+});
 
 export default {
   fetch: app.fetch,

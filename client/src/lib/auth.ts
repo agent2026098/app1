@@ -29,6 +29,25 @@ export const extractTokenFromUrl = (): string | null => {
   return null;
 };
 
+// Exchange session cookie for JWT (after OAuth redirect)
+export const exchangeSessionForToken = async (): Promise<boolean> => {
+  try {
+    const res = await fetch(
+      `${API_URL || window.location.origin}/api/auth/token`,
+      { credentials: "include" },
+    );
+    if (!res.ok) return false;
+    const data = await res.json();
+    if (data.token) {
+      setToken(data.token);
+      return true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+};
+
 // Initialize auth — call on app startup
 export const initializeAuth = (): boolean => {
   const urlToken = extractTokenFromUrl();

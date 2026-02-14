@@ -1,8 +1,9 @@
-import { useState, useSyncExternalStore } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import {
   getToken,
   getCurrentUser,
   initializeAuth,
+  exchangeSessionForToken,
   removeToken,
 } from "@/lib/auth";
 
@@ -30,10 +31,21 @@ localStorage.removeItem = (key: string) => {
 
 export function useAuth() {
   // initializeAuth is synchronous (checks localStorage + URL hash)
-  const [isInitialized] = useState(() => {
-    initializeAuth();
-    return true;
+  const [isInitialized, setIsInitialized] = useState(() => {
+    return initializeAuth();
   });
+  const [isExchanging, setIsExchanging] = useState(false);
+
+  // If no token found, try exchanging session cookie for JWT (OAuth flow)
+  useEffect(() => {
+    if (!isInitialized && !isExchanging) {
+      setIsExchanging(true);
+      exchangeSessionForToken().finally(() => {
+        setIsExchanging(false);
+        setIsInitialized(true);
+      });
+    }
+  }, [isInitialized, isExchanging]);
 
   const token = useSyncExternalStore(
     subscribe,
@@ -56,7 +68,7 @@ export function useAuth() {
   return {
     session,
     user,
-    isPending: !isInitialized,
+    isPending: isExchanging,
     isAuthenticated: !!token,
     logout: () => {
       removeToken();

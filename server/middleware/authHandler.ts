@@ -32,37 +32,7 @@ authHandler.on(["GET", "POST"], "/*", async (c) => {
   const response = await auth.handler(c.req.raw);
   const url = new URL(c.req.url);
 
-  // OAuth callback — inject JWT into redirect URL
-  const isOAuthCallback = url.pathname.includes("/callback/");
-  if (isOAuthCallback && response.status >= 300 && response.status < 400) {
-    const location = response.headers.get("location");
-    if (location) {
-      const session = await auth.api.getSession({
-        headers: c.req.raw.headers,
-      });
-
-      if (session?.user) {
-        const jwtToken = await generateJWT(
-          {
-            userId: session.user.id,
-            email: session.user.email,
-            name: session.user.name,
-          },
-          secret,
-        );
-
-        const redirectUrl = new URL(location);
-        redirectUrl.hash = `token=${jwtToken}`;
-
-        const newResponse = new Response(null, {
-          status: response.status,
-          headers: new Headers(response.headers),
-        });
-        newResponse.headers.set("location", redirectUrl.toString());
-        return newResponse;
-      }
-    }
-  }
+  // OAuth callback — redirect carries session cookie; client will exchange it for JWT via /api/auth/token
 
   // Email/password sign-in/sign-up — add JWT to response header
   const isAuthEndpoint =

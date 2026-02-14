@@ -7,7 +7,11 @@
   "name": "my-hono-app",
   "compatibility_date": "2026-02-12",
   "main": "./dist/index.js",
-  "assets": { "directory": "./dist" },
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
   "observability": {
     "enabled": true,
   },
@@ -23,7 +27,7 @@
   "hyperdrive": [
     {
       "binding": "HYPERDRIVE",
-      "id": "7155e8ec72d0482fbc0513a5947287c9",
+      "id": "0158a81bb4e0415a82c0dc93f3b08f26",
       // Caching is disabled (configured via: wrangler hyperdrive update <id> --caching-disabled true)
       // Reason: cached query results break auth sign-in (stale "user not found")
     },
