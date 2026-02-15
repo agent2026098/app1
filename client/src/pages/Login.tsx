@@ -16,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Eye, EyeOff } from "lucide-react";
 import { FaGithub } from "react-icons/fa6";
 import { FcGoogle } from "react-icons/fc";
+import Logo from "@/components/Logo";
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -64,6 +65,9 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <Card className="w-full max-w-[400px]">
         <CardHeader className="text-center">
+          <div className="flex justify-center mb-2">
+            <Logo size="md" />
+          </div>
           <CardTitle className="text-2xl">Welcome back</CardTitle>
           <CardDescription>Sign in to your account</CardDescription>
         </CardHeader>
