@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Droplets } from "lucide-react";
+import { Flame } from "lucide-react";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg";
@@ -20,7 +20,7 @@ export default function Logo({ size = "md", linkTo = "/" }: LogoProps) {
       <div className="relative">
         <div className="absolute inset-0 rounded-lg bg-primary/20 blur-sm" />
         <div className="relative flex items-center justify-center rounded-lg bg-primary p-1.5">
-          <Droplets className={`${icon} text-primary-foreground`} />
+          <Flame className={`${icon} text-primary-foreground`} />
         </div>
       </div>
       <span
